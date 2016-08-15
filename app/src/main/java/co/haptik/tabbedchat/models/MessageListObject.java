@@ -10,4 +10,8 @@ import java.util.List;
 public class MessageListObject {
     @Expose public Integer count;
     @Expose public List<MessageObject> messages;
+
+    public MessageListObject(){
+
+    }
 }

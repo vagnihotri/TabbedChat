@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,6 +16,7 @@ import co.haptik.tabbedchat.R;
 import co.haptik.tabbedchat.models.FavoriteObject;
 import co.haptik.tabbedchat.models.MessageListObject;
 import co.haptik.tabbedchat.models.MessageObject;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by vijayagnihotri on 16/08/16.
@@ -63,9 +66,11 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
     public void onBindViewHolder(FavoriteListAdapter.ViewHolder viewHolder, int position) {
         FavoriteObject favoriteObject = favList.get(position);
         viewHolder.chatFavName.setText(favoriteObject.name);
-        viewHolder.chatFavUserName.setText(favoriteObject.username);
-        viewHolder.chatMessageCount.setText("Messages: " + favoriteObject.messageCount);
-        viewHolder.chatFavCount.setText("Favorites: " + favoriteObject.favCount);
+        viewHolder.chatMessageCount.setText(favoriteObject.messageCount.toString());
+        viewHolder.chatFavCount.setText(favoriteObject.favCount.toString());
+        if(!favoriteObject.imageUrl.isEmpty()) {
+            Picasso.with(context).load(favoriteObject.imageUrl).placeholder(R.drawable.placeholder).resize(60, 60).noFade().into(viewHolder.chatProfilePic);
+        }
     }
 
     @Override
@@ -75,13 +80,13 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView chatFavName;
-        private TextView chatFavUserName;
+        private CircleImageView chatProfilePic;
         private TextView chatMessageCount;
         private TextView chatFavCount;
         public ViewHolder(View view) {
             super(view);
             chatFavName = (TextView)view.findViewById(R.id.fav_name_text);
-            chatFavUserName = (TextView)view.findViewById(R.id.fav_username_text);
+            chatProfilePic = (CircleImageView)view.findViewById(R.id.fav_profile_pic);
             chatMessageCount = (TextView)view.findViewById(R.id.fav_message_count_text);
             chatFavCount = (TextView)view.findViewById(R.id.fav_count_text);
         }

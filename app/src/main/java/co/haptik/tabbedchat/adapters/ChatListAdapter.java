@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 
@@ -14,6 +17,7 @@ import co.haptik.tabbedchat.Utility;
 import co.haptik.tabbedchat.firebase.FirebaseSingleton;
 import co.haptik.tabbedchat.models.MessageListObject;
 import co.haptik.tabbedchat.models.MessageObject;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by vijayagnihotri on 15/08/16.
@@ -38,14 +42,18 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     public void onBindViewHolder(ChatListAdapter.ViewHolder viewHolder, int i) {
         MessageObject messageObject = messageListObject.messages.get(i);
         viewHolder.chatName.setText(messageObject.name);
-        viewHolder.chatUserName.setText(messageObject.username);
         viewHolder.chatMessage.setText(messageObject.body);
         viewHolder.chatDateTime.setText(Utility.formatDateTimeString(messageObject.messageTime));
-        String favStatus = "Not Fav";
         if(messageObject.isFav) {
-            favStatus =  "Fav";
+            viewHolder.chatStatus.setImageResource(R.drawable.fav_on);
+        } else {
+            viewHolder.chatStatus.setImageResource(R.drawable.fav_off);
         }
-        viewHolder.chatStatus.setText(favStatus);
+        if(!messageObject.imageUrl.isEmpty()) {
+            Picasso.with(context).load(messageObject.imageUrl).placeholder(R.drawable.placeholder).resize(60, 60).noFade().into(viewHolder.chatProfilePic);
+        } else {
+            viewHolder.chatProfilePic.setImageResource(R.drawable.placeholder);
+        }
     }
 
     @Override
@@ -55,24 +63,24 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView chatName;
-        private TextView chatUserName;
         private TextView chatDateTime;
         private TextView chatMessage;
-        private TextView chatStatus;
+        private ImageView chatStatus;
+        private CircleImageView chatProfilePic;
         public ViewHolder(View view) {
             super(view);
             chatName = (TextView)view.findViewById(R.id.chat_name_text);
-            chatUserName = (TextView)view.findViewById(R.id.chat_username_text);
             chatDateTime = (TextView)view.findViewById(R.id.chat_time_text);
             chatMessage = (TextView)view.findViewById(R.id.chat_message_text);
-            chatStatus = (TextView)view.findViewById(R.id.chat_fav_status);
+            chatProfilePic = (CircleImageView)view.findViewById(R.id.chat_profile_pic);
+            chatStatus = (ImageView)view.findViewById(R.id.chat_fav_icon);
             chatStatus.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.chat_fav_status:
+                case R.id.chat_fav_icon:
                     int pos = getAdapterPosition();
                     messageListObject.messages.get(pos).isFav = !messageListObject.messages.get(pos).isFav;
                     notifyItemChanged(pos);

@@ -2,6 +2,7 @@ package co.haptik.tabbedchat;
 
 import android.app.Application;
 
+import co.haptik.tabbedchat.network.GitNet;
 import co.haptik.tabbedchat.network.NetworkUtility;
 
 /**
@@ -11,6 +12,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        new NetworkUtility().initialize("http://haptik.co/android",this);
+        new NetworkUtility().initialize("http://haptik.co/android", this);
+        new GitNet().initialize("https://api.github.com",this);
     }
 }
